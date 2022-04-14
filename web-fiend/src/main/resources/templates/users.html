@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 
 <head>
     <title>Users page</title>
@@ -33,7 +33,7 @@
         <td>
             <form th:action="@{/admin/delete}" method="post">
                 <input type="hidden" th:value="${el.id}" name="userId">
-                <button class="btn btn-warning" type="submit">Delete</button>
+                <button class="btn-danger" type="submit">Delete</button>
             </form>
         </td>
     </tr>

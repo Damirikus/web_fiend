@@ -40,10 +40,27 @@ public class MainController {
 
 
     @GetMapping
-    public String mainPage() {
+    public String mainPage(Model model) {
+
         // здесь проверяю залогинен ли пользователь
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        System.out.println(authentication.getName());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println(authentication.getName());
+        String name = authentication.getName();
+        User user = userRepository.findByUsername(name);
+        if (user == null) {
+            model.addAttribute("anon", "anon");
+            System.out.println("anon");
+        }
+        else {
+            if (user.getRoles().contains(Role.ADMIN)) {
+                model.addAttribute("admin", "admin");
+                System.out.println("admin");
+            }
+            else {
+                model.addAttribute("user", "user");
+                System.out.println("user");
+            }
+        }
 //        if (authentication.getName().isEmpty()) {
 //            System.out.println("HereeHERERREREREREREREERRERE");
             return "main";
