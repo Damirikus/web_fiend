@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     //метод для посика юзера по имени
     User findByUsername(String username);
+
+    User findByActivationCode(String code);
 }

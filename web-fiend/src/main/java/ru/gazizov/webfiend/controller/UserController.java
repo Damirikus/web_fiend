@@ -1,6 +1,5 @@
 package ru.gazizov.webfiend.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,7 +9,6 @@ import ru.gazizov.webfiend.model.User;
 import ru.gazizov.webfiend.repository.UserRepository;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -28,7 +26,7 @@ public class UserController {
     @GetMapping
     public String userList(Model model){
         model.addAttribute("users", userRepository.findAll());
-        return "users";
+        return "internal/admin/users";
     }
 
     @PostMapping("/delete")
@@ -41,7 +39,7 @@ public class UserController {
     public String userEdit(@PathVariable User user, Model model){
         model.addAttribute("user", user);
         model.addAttribute("roles", Role.values());
-        return "user-edit";
+        return "internal/admin/user-edit";
     }
 
     @PostMapping

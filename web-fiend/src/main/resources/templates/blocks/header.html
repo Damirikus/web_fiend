@@ -1,19 +1,23 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 
+
 <div th:fragment="header">
     <header>
         <div class="px-3 py-2 bg-dark text-white">
             <div class="container">
                 <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
                     <a href="/" class="d-flex align-items-center my-2 my-lg-0 me-lg-auto text-white text-decoration-none">
-                        <img th:src="@{abs.png}" width="80" height="80" alt=""><use xlink:href="#bootstrap"></use></img>
+                        <img th:src="@{/images/abs.png}" width="80" height="80" alt=""><use xlink:href="#bootstrap"></use></img>
+<!--                        <div th:if="${#authentication.isAuthenticated()}">-->
+                            <span th:text="${#authentication.getName()}">BOB</span>
+<!--                        </div>-->
                     </a>
 
                     <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
                         <li>
-                            <a href="#" class="nav-link text-secondary">
-                                <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#home"></use></svg>
+                            <a th:href="@{/messages}" class="nav-link text-secondary">
+                                <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="/messages"></use></svg>
                                 Home
                             </a>
                         </li>
@@ -35,12 +39,17 @@
                                 Products
                             </a>
                         </li>
-                        <li>
-                            <a href="#" class="nav-link text-white">
-                                <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#people-circle"></use></svg>
-                                Customers
-                            </a>
-                        </li>
+                        <div th:unless="${#authentication.getName() == 'anonymousUser'}">
+                            <div th:if="${#authentication.getPrincipal().isAdmin()}">
+                                <a th:href="@{/admin}" class="nav-link text-white">
+                                    <img th:src="@{/images/adm2.png}" alt="" width="24" height="24" class="bi d-block mx-auto mb-1">
+                                    Management
+                                </a>
+                            </div>
+
+                        </div>
+
+
                     </ul>
                 </div>
             </div>
@@ -53,17 +62,16 @@
 
 
                 <div class="text-end">
-                    <div th:if="${admin}">
+                    <div th:unless="${#authentication.getName() == 'anonymousUser'}">
                         <form th:action="@{/logout}" method="post">
-                            <input type="submit" value="Sign Out"/>
-                        </form>
+                            <input type="submit" class="btn btn-light text-dark me-2" value="Sign Out"/>
+                            </form>
                     </div>
-                    <div th:if="${anon}">
+
+                    <div th:if="${#authentication.getName() == 'anonymousUser'}">
                         <a type="button" class="btn btn-light text-dark me-2" href="/messages">Login</a>
                         <a type="button" class="btn btn-primary" href="/registration">Sign-up</a>
                     </div>
-
-
                 </div>
 
             </div>

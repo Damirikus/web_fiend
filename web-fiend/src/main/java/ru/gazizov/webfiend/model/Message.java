@@ -1,7 +1,9 @@
 package ru.gazizov.webfiend.model;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 public class Message {
@@ -9,7 +11,7 @@ public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    private Date date;
+    private LocalDateTime date;
     private String tag;
     private String text;
 
@@ -21,7 +23,7 @@ public class Message {
     private String filename;
 
 
-    public Message(Date date, String tag, String text, User user) {
+    public Message(LocalDateTime date, String tag, String text, User user) {
         this.date = date;
         this.tag = tag;
         this.text = text;
@@ -51,11 +53,11 @@ public class Message {
         this.id = id;
     }
 
-    public Date getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
@@ -81,5 +83,18 @@ public class Message {
 
     public void setFilename(String filename) {
         this.filename = filename;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Message message = (Message) o;
+        return getId() == message.getId() && Objects.equals(getDate(), message.getDate()) && Objects.equals(getTag(), message.getTag()) && Objects.equals(getText(), message.getText()) && Objects.equals(getAuthor(), message.getAuthor()) && Objects.equals(getFilename(), message.getFilename());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getDate(), getTag(), getText(), getAuthor(), getFilename());
     }
 }

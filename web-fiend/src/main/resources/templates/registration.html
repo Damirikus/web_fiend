@@ -13,8 +13,12 @@
 <h1 class="h3 mb-3 fw-normal">Registration</h1>
 <form th:action="@{/registration}" method="post">
   <div class="form-floating">
-    <input type="text" name="username" class="form-control" placeholder="name@example.com" id="floatingInput"/>
-    <label for="floatingInput">Email address</label>
+    <input type="text" name="username" class="form-control" placeholder="username" id="floatingInput"/>
+    <label for="floatingInput">Username</label>
+  </div>
+  <div class="form-floating">
+    <input type="email" name="email" class="form-control" placeholder="name@example.com" id="floatingEmail"/>
+    <label for="floatingEmail">Email</label>
   </div>
   <div class="form-floating">
     <input type="password" name="password" class="form-control" placeholder="Password" id="floatingPassword"/>

@@ -10,7 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
 
-    @Value("${upload.path}") //из проперти берем путь до загружаемых картинок
+    @Value("${upload.path}")
     private String path;
 
     public void addViewControllers(ViewControllerRegistry registry) {
@@ -24,4 +24,5 @@ public class MvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/static/**") // раздаем весь файл статик и все стили
                 .addResourceLocations("classpath:/static/");  // classpath говорит, что искать в файлах проекта
     }
+
 }

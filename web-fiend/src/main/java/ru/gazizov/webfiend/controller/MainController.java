@@ -2,25 +2,19 @@ package ru.gazizov.webfiend.controller;
 
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.gazizov.webfiend.model.Message;
-import ru.gazizov.webfiend.model.Role;
 import ru.gazizov.webfiend.model.User;
 import ru.gazizov.webfiend.repository.MessageRepository;
-import ru.gazizov.webfiend.repository.UserRepository;
+import ru.gazizov.webfiend.service.UserService;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Objects;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Controller
@@ -31,50 +25,23 @@ public class MainController {
 
     //через конструктор автоматически идет внедрение зависимости
     private final MessageRepository messageRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public MainController(MessageRepository messageRepository, UserRepository userRepository) {
+    public MainController(MessageRepository messageRepository, UserService userService) {
         this.messageRepository = messageRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
-
 
     @GetMapping
     public String mainPage(Model model) {
-
-        // здесь проверяю залогинен ли пользователь
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println(authentication.getName());
-        String name = authentication.getName();
-        User user = userRepository.findByUsername(name);
-        if (user == null) {
-            model.addAttribute("anon", "anon");
-            System.out.println("anon");
-        }
-        else {
-            if (user.getRoles().contains(Role.ADMIN)) {
-                model.addAttribute("admin", "admin");
-                System.out.println("admin");
-            }
-            else {
-                model.addAttribute("user", "user");
-                System.out.println("user");
-            }
-        }
-//        if (authentication.getName().isEmpty()) {
-//            System.out.println("HereeHERERREREREREREREERRERE");
             return "main";
-//        }
-//        System.out.println(authentication.isAuthenticated());
-//
-//        return "redirect:/messages";
     }
 
     @GetMapping("/messages")
     public String messages(Model model) {
         Iterable<Message> messages = messageRepository.findAll();
         model.addAttribute("messages", messages);
-        return "messages";
+        return "internal/messages";
     }
 
     @PostMapping("/messages")
@@ -83,7 +50,7 @@ public class MainController {
                              @AuthenticationPrincipal User user,
                              @RequestParam("file") MultipartFile file) throws IOException {
         if (!text.isEmpty()){
-            Message message = new Message(new Date(), tag, text, user);
+            Message message = new Message(LocalDateTime.now(), tag, text, user);
 
             if (file != null && !file.getOriginalFilename().isEmpty()){
 
@@ -107,19 +74,25 @@ public class MainController {
 
     @PostMapping("/registration")
     public String registerPost(User user, Model model){
-        User userByDb = userRepository.findByUsername(user.getUsername());
-        if (userByDb != null){
-            model.addAttribute("message", "User already exists!");
+
+        String command = userService.addUser(user);
+        if (!command.equals("yes")){
+            model.addAttribute("message", command);
             return "registration";
         }
-        if (user.getPassword().isEmpty()) {
-            model.addAttribute("message", "Please write the password!");
-            return "registration";
-        }
-        user.setActive(true);
-        user.setRoles(Collections.singleton(Role.USER));
-        userRepository.save(user);
         return "redirect:/login";
+    }
+
+    //контроллер для обработки ссылки с почты
+    @GetMapping("/activate/{code}")
+    public String activate(Model model, @PathVariable String code){
+        boolean isActive = userService.activateUser(code);
+        if (isActive){
+            model.addAttribute("message", "Activation is success!");
+        } else {
+            model.addAttribute("message", "Account already active!");
+        }
+        return "activate";
     }
 
 }
