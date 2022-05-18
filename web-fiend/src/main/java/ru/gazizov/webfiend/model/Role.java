@@ -3,6 +3,14 @@ package ru.gazizov.webfiend.model;
 
 import org.springframework.security.core.GrantedAuthority;
 
+/*
+Role. Этот класс должен реализовывать интерфейс GrantedAuthority,
+в котором необходимо переопределить только один метод getAuthority() (возвращает имя роли).
+Имя роли должно соответствовать шаблону: «ROLE_ИМЯ», например, ROLE_USER.
+Кроме конструктора по умолчанию необходимо добавить еще пару публичных конструкторов:
+первый принимает только id, второй id и name.
+ */
+
 public enum Role implements GrantedAuthority {
     USER, ADMIN;
 

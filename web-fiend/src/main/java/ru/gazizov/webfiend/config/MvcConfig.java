@@ -6,13 +6,18 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-//этот класс был необходим при подключении spring security, здесь видимо доавляем автоматический контроллер для логина
+//этот класс был необходим при подключении spring security
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
 
     @Value("${upload.path}")
     private String path;
 
+
+    /*
+    Страница login обрабатывается Spring Security контроллером по умолчанию,
+    поэтому для неё отдельный контроллер не требуется.
+     */
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/login").setViewName("login");
     }

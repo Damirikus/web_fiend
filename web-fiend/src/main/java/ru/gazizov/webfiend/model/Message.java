@@ -1,6 +1,9 @@
 package ru.gazizov.webfiend.model;
 
+import org.hibernate.validator.constraints.Length;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
@@ -10,9 +13,11 @@ public class Message {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private Long id;
     private LocalDateTime date;
     private String tag;
+    @NotBlank(message = "Please enter the message!")
+    @Length(max = 2048, message = "Message too long!")
     private String text;
 
     //добавляем автора, кто написал
@@ -23,8 +28,8 @@ public class Message {
     private String filename;
 
 
-    public Message(LocalDateTime date, String tag, String text, User user) {
-        this.date = date;
+    public Message(String tag, String text, User user) {
+        this.date = LocalDateTime.now();
         this.tag = tag;
         this.text = text;
         this.author = user;
@@ -45,11 +50,11 @@ public class Message {
         this.author = author;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

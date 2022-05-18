@@ -14,8 +14,8 @@
 <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 <form th:action="@{/login}" method="post">
     <div class="form-floating">
-        <input type="text" name="username" class="form-control" placeholder="name@example.com" id="floatingInput"/>
-        <label for="floatingInput">Email address</label>
+        <input type="text" name="username" class="form-control" placeholder="username" id="floatingInput"/>
+        <label for="floatingInput">Username</label>
     </div>
     <div class="form-floating">
         <input type="password" name="password" class="form-control" placeholder="Password" id="floatingPassword"/>
@@ -29,7 +29,8 @@
 <!--    <div><input type="submit" value="Sign In"/></div>-->
     <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
     <br/>
-    <a type="button" class="btn btn-primary btn-lg px-4 gap-3" th:href="@{/registration}">Registration</a>
+    <br/>
+    <a type="button" class="w-100 btn btn-lg btn-primary" th:href="@{/registration}">Registration</a>
     <div th:if="${param.error}">
         Invalid username or password.
     </div>

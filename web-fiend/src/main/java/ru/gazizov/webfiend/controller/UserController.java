@@ -6,7 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.gazizov.webfiend.model.Role;
 import ru.gazizov.webfiend.model.User;
-import ru.gazizov.webfiend.repository.UserRepository;
+import ru.gazizov.webfiend.service.UserService;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -15,27 +15,30 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin")
-@PreAuthorize("hasAuthority('ADMIN')") //только админы могут постеить эти страницы
 public class UserController {
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
+
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')") //только админы могут постеить эти страницы
     public String userList(Model model){
-        model.addAttribute("users", userRepository.findAll());
+        model.addAttribute("users", userService.findAll());
         return "internal/admin/users";
     }
 
     @PostMapping("/delete")
+    @PreAuthorize("hasAuthority('ADMIN')") //только админы могут постеить эти страницы
     public  String deleteUser(@RequestParam("userId") User user){
-        userRepository.delete(user);
+        userService.delete(user);
         return "redirect:/admin";
     }
 
     @GetMapping("{user}")
+    @PreAuthorize("hasAuthority('ADMIN')") //только админы могут постеить эти страницы
     public String userEdit(@PathVariable User user, Model model){
         model.addAttribute("user", user);
         model.addAttribute("roles", Role.values());
@@ -43,21 +46,13 @@ public class UserController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')") //только админы могут постеить эти страницы
     public String saveUserEdit(@RequestParam String username,
                                @RequestParam Map<String, String> form, //получаем все данные из формы
                                @RequestParam("userId") User user){ //здесь спринг автоматически по айди найдет юзера
-        user.setUsername(username);
-        //получаем в сет стрингов все роли
-        Set<String> roles = Arrays.stream(Role.values()).map(Role::name).collect(Collectors.toSet());
-        user.getRoles().clear();
 
-        for (String key : form.keySet()){
-            if (roles.contains(key)){
-                user.getRoles().add(Role.valueOf(key));
-            }
-        }
+        userService.saveUser(username, form, user);
 
-        userRepository.save(user);
         return "redirect:/admin";
     }
 }
