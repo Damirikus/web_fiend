@@ -4,6 +4,7 @@ package ru.gazizov.webfiend.controller;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -93,39 +94,6 @@ public class MainController {
         Iterable<Message> messages = messageRepository.findAll();
         model.addAttribute("messages", messages);
         return "internal/messages";
-    }
-
-    @GetMapping("/profile")
-    public String profile(Model model, @AuthenticationPrincipal User user){
-        model.addAttribute("user", user);
-        return "internal/profile";
-    }
-
-    @GetMapping("/profile/edit")
-    public String profileEdit(Model model, @AuthenticationPrincipal User user){
-        model.addAttribute("user", user);
-        return "internal/profile-edit";
-    }
-
-    @PostMapping("/profile/edit")
-    public String saveProfileChanges(@AuthenticationPrincipal User userExists,
-                                     @RequestParam("password2") String password2,
-                                     @Valid User user,
-                                     BindingResult bindingResult,
-                                     Model model){
-
-        if (user.getPassword() != null && !user.getPassword().equals(password2)){
-            model.addAttribute("passwordError", "Passwords are not equals!");
-        }
-
-        if (bindingResult.hasErrors()){
-            Map<String, String> errors = ControllersUtils.getErrors(bindingResult);
-            model.mergeAttributes(errors);
-            return "internal/profile-edit";
-        }
-
-        userService.updateProfile(userExists, user.getEmail(), user.getPassword());
-        return "redirect:/profile";
     }
 
     @GetMapping("/registration")

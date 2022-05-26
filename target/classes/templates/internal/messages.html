@@ -13,19 +13,6 @@
 <header th:insert="blocks/header :: header"></header>
 
 <div class="container mt-5">
-    <h2>Messages</h2>
-    <div th:each="el : ${messages}" class="alert alert-info mt-2">
-        <h3 th:text="${el.text}"></h3>
-        <p th:text="${el.tag}"></p>
-        <p th:text="${el.date}"></p>
-        <strong th:text="${el.authorName}"></strong>
-        <div th:if="${el.filename}">
-            <img th:src="@{'/img/' + ${el.filename}}">
-        </div>
-    </div>
-</div>
-<br/>
-<div class="container mt-5">
     <h1>Add message</h1>
     <form th:action="@{/messages}" method="post" enctype="multipart/form-data">
         <input type="text" name="tag" placeholder="Entry tag" class="form-control">
@@ -45,6 +32,24 @@
         <button type="submit" class="btn btn-success">Add</button>
     </form>
 </div>
+<br/>
+<br/>
+<div class="container mt-10">
+    <h2>Messages</h2>
+    <div th:each="el : ${messages}" class="card border-info mb-3">
+        <div class="card-body text-secondary">
+            <div th:if="${el.filename}" class="card-img-top">
+                <img th:src="@{'/img/' + ${el.filename}}" alt="">
+            </div>
+            <h3 th:text="${el.text}" class="card-text"></h3>
+            <a th:href="@{'/profile/' + ${el.getAuthor().getId()}}" th:text="${el.authorName} + ': ' + ${el.getDate()}"></a>
+
+        </div>
+
+    </div>
+</div>
+<br/>
+
 
 
 <div th:insert="blocks/footer :: footer"></div>

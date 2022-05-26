@@ -34,7 +34,7 @@
                             </a>
                         </li>
                         <div th:unless="${#authentication.getName() == 'anonymousUser'}">
-                                <a th:href="@{/profile}" class="nav-link text-white">
+                                <a th:href="@{'/profile/' + ${#authentication.getPrincipal().getId()}}" class="nav-link text-white">
                                     <img th:src="@{/images/profile.png}" alt="" width="24" height="24" class="bi d-block mx-auto mb-1">
                                     Profile
                                 </a>

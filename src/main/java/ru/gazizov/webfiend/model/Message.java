@@ -17,6 +17,7 @@ public class Message implements Serializable {
     private Long id;
     private LocalDateTime date;
     private String tag;
+
     @NotBlank(message = "Please enter the message!")
     @Length(max = 2048, message = "Message too long!")
     private String text;

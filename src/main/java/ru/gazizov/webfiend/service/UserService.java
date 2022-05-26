@@ -1,6 +1,7 @@
 package ru.gazizov.webfiend.service;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.transaction.annotation.Transactional;
 import ru.gazizov.webfiend.model.User;
 
 import java.util.List;
@@ -21,4 +22,12 @@ public interface UserService extends UserDetailsService {
     void saveUser(String username, Map<String, String> form, User user);
 
     void updateProfile(User user, String email, String password);
+    @Transactional
+    void subscribe(User user, User currentUser);
+    @Transactional
+    void unSubscribe(User user, User currentUser);
+
+    User findById(Long id);
+
+//    User find(Class<User> userClass, Long id);
 }

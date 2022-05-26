@@ -37,8 +37,18 @@
                                 <h4>John Doe</h4>
                                 <p class="text-secondary mb-1">Full Stack Developer</p>
                                 <p class="text-muted font-size-sm">Bay Area, San Francisco, CA</p>
-                                <button class="btn btn-primary">Follow</button>
-                                <button class="btn btn-outline-primary">Message</button>
+
+                                <div th:unless="${currentUser}">
+                                    <div th:unless="${isSubscriber}">
+                                        <a th:href="@{ '/profile/' + ${user.getId()} + '/subscribe'}" class="btn btn-primary">Follow</a>
+                                    </div>
+                                    <div th:if="${isSubscriber}">
+                                        <a th:href="@{ '/profile/' + ${user.getId()} + '/unsubscribe'}" class="btn btn-primary">Unfollow</a>
+                                    </div>
+                                    <a class="btn btn-outline-primary">Message</a>
+                                </div>
+
+
                             </div>
                         </div>
                     </div>
@@ -116,14 +126,35 @@
                             </div>
                         </div>
                         <hr>
-                        <div class="row">
+                        <div class="row" th:if="${currentUser}">
                             <div class="col-sm-12">
-                                <a class="btn btn-info " target="__blank" th:href="@{/profile/edit}">Edit</a>
+                                <a class="btn btn-info " th:href="@{'/profile/' + ${#authentication.getPrincipal().getId()} + '/edit'}">Edit</a>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <div class="col my-1">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-title">Subscribers</div>
+                            <h3 class="card-text">
+                                <a th:href="@{/profile/subscribers/}" th:text="${subscribersCount}"></a>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col my-1">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-title">Subscriptions</div>
+                            <h3 class="card-text">
+                                <a th:href="@{/profile/subscriptions/}" th:text="${subscriptionsCount}"></a>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+                <br>
                 <div class="row gutters-sm">
                     <div class="col-sm-6 mb-3">
                         <div class="card h-100">
@@ -180,10 +211,10 @@
                         </div>
                     </div>
                 </div>
-
-
-
             </div>
+
+
+
         </div>
 
     </div>

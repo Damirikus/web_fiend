@@ -1,10 +1,13 @@
 package ru.gazizov.webfiend.service;
 
+import org.hibernate.Hibernate;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.gazizov.webfiend.model.Role;
 import ru.gazizov.webfiend.model.User;
 import ru.gazizov.webfiend.repository.UserRepository;
@@ -113,4 +116,23 @@ public class UserServiceImpl  implements UserService{
 
         userRepository.save(user);
     }
+
+    @Override
+    public void subscribe(User user, User currentUser) {
+
+        user.getSubscribers().add(currentUser);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void unSubscribe(User user, User currentUser) {
+        user.getSubscribers().remove(currentUser);
+        userRepository.save(user);
+    }
+
+    @Override
+    public User findById(Long id) {
+        return userRepository.findById(id).get();
+    }
+
 }
