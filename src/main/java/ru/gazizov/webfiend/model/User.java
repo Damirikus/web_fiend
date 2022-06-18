@@ -40,6 +40,7 @@ public class User implements UserDetails, Serializable {
 
     private String activationCode;
     private boolean active;
+//    private String address;
 
     //обратная связь с ManyToOne в Message, указали author, так как в Message так называется поле
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -180,6 +181,14 @@ public class User implements UserDetails, Serializable {
         this.subscriptions = subscriptions;
     }
 
+//    public String getAddress() {
+//        return address;
+//    }
+//
+//    public void setAddress(String address) {
+//        this.address = address;
+//    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -202,10 +211,10 @@ public class User implements UserDetails, Serializable {
                 ", password='" + password + '\n' +
                 ", activationCode='" + activationCode + '\n' +
                 ", active=" + active +'\n' +
-                ", messages=" + messages +'\n' +
-                ", subscribers=" + subscribers +'\n' +
-                ", subscriptions=" + subscriptions +'\n' +
-                ", roles=" + roles +
+//                ", messages=" + messages +'\n' +
+//                ", subscribers=" + subscribers.size() +'\n' +
+//                ", subscriptions=" + subscriptions.size() +'\n' +
+//                ", roles=" + roles +
                 '}';
     }
 }

@@ -18,4 +18,7 @@ public class BeanConfig {
     public PasswordEncoder getPasswordEncoder(){
         return new BCryptPasswordEncoder(12);
     }
+
+
+
 }

@@ -1,6 +1,8 @@
 package ru.gazizov.webfiend.service;
 
 import org.hibernate.Hibernate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,6 +19,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl  implements UserService{
+
+    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
+
     private final UserRepository userRepository;
     private final MailSenderService mailSender;
     private final PasswordEncoder passwordEncoder;
@@ -107,6 +112,7 @@ public class UserServiceImpl  implements UserService{
                 || (email != null && !email.equals(existsEmail))){
             user.setEmail(email);
             if (!email.isEmpty()){
+//                log.debug();
                 user.setActivationCode(UUID.randomUUID().toString());
                 sendMessage(user);
             }
@@ -119,20 +125,21 @@ public class UserServiceImpl  implements UserService{
 
     @Override
     public void subscribe(User user, User currentUser) {
-
         user.getSubscribers().add(currentUser);
         userRepository.save(user);
+        log.info(currentUser.getUsername() + " {} subscribed to " + user.getUsername(), user);
     }
 
     @Override
     public void unSubscribe(User user, User currentUser) {
         user.getSubscribers().remove(currentUser);
         userRepository.save(user);
+        log.info(currentUser.getUsername() + " unsubscribed " + user.getUsername());
     }
 
     @Override
     public User findById(Long id) {
-        return userRepository.findById(id).get();
+        return userRepository.findById(id).orElse(null);
     }
 
 }

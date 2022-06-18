@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.gazizov.webfiend.model.Role;
 import ru.gazizov.webfiend.model.User;
 import ru.gazizov.webfiend.service.UserService;
 
@@ -49,7 +50,7 @@ public class UserController {
         return "internal/profile-edit";
     }
 
-    @PostMapping("{userId}/edit")
+    @PostMapping("{user}/edit")
     public String saveProfileChanges(@AuthenticationPrincipal User userExists,
                                      @RequestParam("password2") String password2,
                                      @Valid User user,
@@ -61,12 +62,13 @@ public class UserController {
             return "internal/profile-edit";
         }
 
-        if ((bindingResult.hasErrors() && !user.getPassword().isEmpty())){
-            Map<String, String> errors = ControllersUtils.getErrors(bindingResult);
-            model.mergeAttributes(errors);
-            return "internal/profile-edit";
+        if (!user.getRoles().contains(Role.ADMIN)){
+            if ((bindingResult.hasErrors() && !user.getPassword().isEmpty())){
+                Map<String, String> errors = ControllersUtils.getErrors(bindingResult);
+                model.mergeAttributes(errors);
+                return "internal/profile-edit";
+            }
         }
-
 
 
         userService.updateProfile(userExists, user.getEmail(), user.getPassword());
@@ -89,5 +91,20 @@ public class UserController {
                             @PathVariable User user){
         userService.unSubscribe(user, currentUser);
         return "redirect:/profile/{user}";
+    }
+
+
+    @GetMapping("{user}/{type}/list")
+    public String subscriptionsList(@PathVariable User user,
+                                    @PathVariable String type,
+                                    Model model){
+        model.addAttribute("userCurrent", user);
+        if (type.equals("subscriptions")){
+            model.addAttribute("users", user.getSubscriptions());
+        } else {
+            model.addAttribute("users", user.getSubscribers());
+        }
+
+        return "internal/subscriptions";
     }
 }
